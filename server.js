@@ -23,9 +23,9 @@ mongoose.connect(process.env.MONGODB_URI)
         console.log(err);
     });
 
-// Get all tasks
+// Get all tasks sorted by creation date
 app.get("/tasks", async (req, res) => {
-    const tasks = await Task.find();
+    const tasks = await Task.find().sort({ createdAt: -1 });
     res.json(tasks);
 });
 

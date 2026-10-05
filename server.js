@@ -23,21 +23,30 @@ mongoose.connect(process.env.MONGODB_URI)
         console.log(err);
     });
 
-// Get all tasks sorted by creation date
+// Get tasks by user ID sorted by creation date
 app.get("/tasks", async (req, res) => {
-    const tasks = await Task.find().sort({ createdAt: -1 });
+
+    const { userId } = req.query;
+
+    const tasks = await Task.find({ userId })
+        .sort({ createdAt: -1 });
+
     res.json(tasks);
 });
 
 // Add new task
 app.post("/tasks", async (req, res) => {
+
     const task = new Task(req.body);
+
     await task.save();
+
     res.status(201).json(task);
 });
 
 // Update task
 app.put("/tasks/:id", async (req, res) => {
+
     const task = await Task.findByIdAndUpdate(
         req.params.id,
         req.body,
@@ -49,6 +58,7 @@ app.put("/tasks/:id", async (req, res) => {
 
 // Delete task
 app.delete("/tasks/:id", async (req, res) => {
+
     await Task.findByIdAndDelete(req.params.id);
 
     res.json({
